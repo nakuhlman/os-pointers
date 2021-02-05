@@ -19,7 +19,24 @@ int promptInt(std::string message, int min, int max);
 int main(int argc, char **argv) {
     Student student;
     double average;
-    promptInt("Enter a number: ", 50, 100);
+
+    // Prompting for the student's ID number (between 0 and 9 digits long)
+    int id = promptInt("Please enter the student's id number: ", 0, 999999999);
+    student.id = id;
+
+    // Prompting for the student's first name
+    string firstname;
+    cout << "Please enter the student's first name: ";
+    getline(cin,firstname);
+    cin.ignore();
+    student.f_name = firstname;
+
+    // Prompting for the student's last name
+    string lastname;
+    cout << "Please enter the student's last name: ";
+    getline(cin,lastname);
+    cin.ignore();
+
     // Sequence of user input -> store in fields of `student`
 
     // Call `CalculateStudentAverage(???, ???)`
@@ -29,10 +46,10 @@ int main(int argc, char **argv) {
 }
 
 /*
-   Prompts the user to enter an int between two defined values
-   message: text to output as the prompt
-   min: minimum value to accept as a valid int
-   max: maximum value to accept as a valid int
+   Prompts the user to enter an int between two defined values.
+    message: text to output as the prompt
+    min: minimum value to accept as a valid int
+    max: maximum value to accept as a valid int
 */
 int promptInt(string message, int min, int max) {
     // The number entered by the user
@@ -44,7 +61,7 @@ int promptInt(string message, int min, int max) {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
-    
+
     return input;
 }
 
