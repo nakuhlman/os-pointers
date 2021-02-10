@@ -28,9 +28,8 @@ int main(int argc, char **argv) {
 
     string firstname;
     cout << "Please enter the student's first name: ";
-    getline(cin,firstname);
-    cin.clear();
     cin.ignore();
+    getline(cin,firstname);
     // Convert the string to a const char *, then to a char * and assign to student's f_name field
     char * temp1 = const_cast<char*>(firstname.c_str());
     student.f_name = temp1;
@@ -39,8 +38,8 @@ int main(int argc, char **argv) {
     string lastname;
     cout << "Please enter the student's last name: ";
     getline(cin,lastname);
-    cin.clear();
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    //cin.clear();
+    //cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cout << '\n';
      // Convert the string to a const char *, then to a char * and assign to student's l_name field
     char * temp2 = const_cast<char*>(lastname.c_str());
@@ -58,7 +57,7 @@ int main(int argc, char **argv) {
         grades[i] = promptDouble(msg, 0, 1000.0);
     }
 
-    cout << "Student: " << student.f_name << endl;
+    cout << "Student: " << student.f_name << " " << student.l_name << endl;
 
     //cout << "Student " << student.firstname << " " << student.lastname << "[" << student.id << "]" << endl;
 
@@ -97,6 +96,7 @@ int promptInt(string message, int min, int max) {
             break;
         }
     }
+
     return input;
 }
 
@@ -124,6 +124,9 @@ double promptDouble(string message, double min, double max) {
         } else {
             break;
         }
+
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
     return input;
 }
@@ -140,7 +143,7 @@ void calculateStudentAverage(void *object, double *avg) {
     // avg = sum/grades.size
     // format
     // return avg;
-    for(int i = 0; i < sizeof(grades); i++) {
+    //for(int i = 0; i < sizeof(grades); i++) {
         
-    }
+    //}
 }
