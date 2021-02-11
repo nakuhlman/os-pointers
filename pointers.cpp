@@ -47,8 +47,8 @@ int main(int argc, char **argv) {
     student.n_assignments = promptInt("Please enter how many assignments were graded: ", 1, 134217728);
     cout << '\n';
 
-    // Array of doubles to store the assignment grades
-    double grades[student.n_assignments];
+    // Array of doubles to store the assignment grades, one extra spot for terminating character
+    double grades[student.n_assignments + 1];
 
     // Get the grades of all the assignments one by one
     for(int i = 0; i < student.n_assignments; i++) {
@@ -56,6 +56,9 @@ int main(int argc, char **argv) {
         grades[i] = promptDouble(msg, 0, 1000.0);
     }
 
+    // Add the null terminator to indicate the end of the array
+    grades[student.n_assignments] = '\0';
+    
     // Call calculateStudentAverage, passing in the grades array and the student "grades" field that holds the average
     calculateStudentAverage(grades, student.grades);
 
@@ -131,19 +134,26 @@ double promptDouble(string message, double min, double max) {
    avg: pointer to a double (can store a value here)
 */
 void calculateStudentAverage(void *object, double *avg) {
-    // Code to calculate and store average grade
-    double sum = 0;
+    // Cast the void pointer to grades
     double * grades = (double *)(object);
-    
-    // Determine the amount of elements in the array by dividing the size of the array in bytes by the size of the element at the first index
-    int size = sizeof(grades)/sizeof(grades[0]); // ERROR HERE
-    cout << size;
+
+    // Calculate the size of the passed-in array, indicated by the null terminating character '\0'
+    int size = 0;
+    for(int i = 0; grades[i] != '\0'; i++){
+        size++;
+    }
 
     // Sum the elements in the array
+    double sum = 0;
     for(int i = 0; i < size; i++) {
         sum = sum + grades[i];
     }
 
     // Calculate the average by dividing sum by size
-    * avg = sum/size;
+    double result = sum/size;
+    cout << result;
+
+    // Dereference avg
+    *avg = result;
+    cout << "got here";
 }
