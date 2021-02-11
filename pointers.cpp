@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
     double average;
 
     // Prompt for the student's ID number (between 0 and 9 digits long)
-    int id = promptInt("Please enter the student's id number: ", 0, 999999999);
+    int id = promptInt("\nPlease enter the student's id number: ", 0, 999999999);
     student.id = id;
 
     string firstname;
@@ -38,15 +38,14 @@ int main(int argc, char **argv) {
     string lastname;
     cout << "Please enter the student's last name: ";
     getline(cin,lastname);
-    //cin.clear();
-    //cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cout << '\n';
+    
      // Convert the string to a const char *, then to a char * and assign to student's l_name field
     char * temp2 = const_cast<char*>(lastname.c_str());
     student.l_name = temp2;
 
     // Prompt for the number of assignments
-    student.n_assignments = promptInt("Please enter how many assignments were graded: ", 0, 134217728);
+    student.n_assignments = promptInt("Please enter how many assignments were graded: ", 1, 134217728);
+    cout << '\n';
 
     // Array of doubles to store the assignment grades
     double grades[student.n_assignments];
@@ -57,16 +56,12 @@ int main(int argc, char **argv) {
         grades[i] = promptDouble(msg, 0, 1000.0);
     }
 
-    cout << "Student: " << student.f_name << " " << student.l_name << endl;
-
-    //cout << "Student " << student.firstname << " " << student.lastname << "[" << student.id << "]" << endl;
-
-    // Sequence of user input -> store in fields of `student`
-
-    // Call `CalculateStudentAverage(???, ???)`
-    //double finalGrade = calculateStudentAverage(&grades, &finalGrade);
+    // Call calculateStudentAverage, passing in the grades array and the student "grades" field that holds the average
+    calculateStudentAverage(grades, student.grades);
 
     // Output `average`
+    cout << "\nStudent: " << student.f_name << " " << student.l_name << " [" << student.id << "]" << endl;
+    cout << "  Average grade: " << student.grades << "\n" << endl;
 
     return 0;
 }
@@ -137,13 +132,18 @@ double promptDouble(string message, double min, double max) {
 */
 void calculateStudentAverage(void *object, double *avg) {
     // Code to calculate and store average grade
-    // double sum, avg;
-    // for i = 0, i < grades.size, i++
-    //      sum = sum + grades[i]
-    // avg = sum/grades.size
-    // format
-    // return avg;
-    //for(int i = 0; i < sizeof(grades); i++) {
-        
-    //}
+    double sum = 0;
+    double * grades = (double *)(object);
+    
+    // Determine the amount of elements in the array by dividing the size of the array in bytes by the size of the element at the first index
+    int size = sizeof(grades)/sizeof(grades[0]); // ERROR HERE
+    cout << size;
+
+    // Sum the elements in the array
+    for(int i = 0; i < size; i++) {
+        sum = sum + grades[i];
+    }
+
+    // Calculate the average by dividing sum by size
+    * avg = sum/size;
 }
