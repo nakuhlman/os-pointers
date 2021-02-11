@@ -60,11 +60,12 @@ int main(int argc, char **argv) {
     grades[student.n_assignments] = '\0';
     
     // Call calculateStudentAverage, passing in the grades array and the student "grades" field that holds the average
+    student.grades = new double[1];
     calculateStudentAverage(grades, student.grades);
 
     // Output `average`
     cout << "\nStudent: " << student.f_name << " " << student.l_name << " [" << student.id << "]" << endl;
-    cout << "  Average grade: " << student.grades << "\n" << endl;
+    cout << "  Average grade: " << *student.grades << "\n" << endl;
 
     return 0;
 }
