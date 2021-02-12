@@ -5,6 +5,7 @@
 #include <iomanip>
 using namespace std;
 
+// Student structure that will hold a student's info
 typedef struct Student {
     int id;
     char *f_name;
@@ -24,22 +25,23 @@ int main(int argc, char **argv) {
     double average;
 
     // Prompt for the student's ID number (between 0 and 9 digits long)
-    int id = promptInt("\nPlease enter the student's id number: ", 0, 999999999);
+    int id = promptInt("Please enter the student's id number: ", 0, 999999999);
     student.id = id;
-
+    
+    // Get the student's first name as a string
     string firstname;
     cout << "Please enter the student's first name: ";
     getline(cin,firstname);
-    // Convert the string to a const char *, then to a char * and assign to student's f_name field
+    // Convert the string to a const char *, then cast it to a char * and assign to student's f_name field
     char * temp1 = const_cast<char*>(firstname.c_str());
     student.f_name = temp1;
 
-    // Prompt for the student's last name, then set the char pointer to the string's address
+    // Get the student's last name
     string lastname;
     cout << "Please enter the student's last name: ";
     getline(cin,lastname);
     
-     // Convert the string to a const char *, then to a char * and assign to student's l_name field
+     // Convert the string to a const char *, then cast it to a char * and assign to student's l_name field
     char * temp2 = const_cast<char*>(lastname.c_str());
     student.l_name = temp2;
 
@@ -52,18 +54,18 @@ int main(int argc, char **argv) {
 
     // Get the grades of all the assignments one by one
     for(int i = 0; i < student.n_assignments; i++) {
-        string msg = "Please enter the grade for assignment " + to_string(i) + ": ";
+        string msg = "Please enter grade for assignment " + to_string(i) + ": ";
         grades[i] = promptDouble(msg, 0, 1000.0);
     }
 
-    // Add the null terminator to indicate the end of the array
+    // Add the null terminator to indicate the end of the grades 
     grades[student.n_assignments] = '\0';
     
     // Call calculateStudentAverage, passing in the grades array and the student "grades" field that holds the average
     student.grades = new double[1];
     calculateStudentAverage(grades, student.grades);
 
-    // Output `average`
+    // Output `average' and information about the student
     cout << "\nStudent: " << student.f_name << " " << student.l_name << " [" << student.id << "]" << endl;
     cout << "  Average grade: " << setprecision(1) << fixed << *student.grades << "\n" << endl;
 
@@ -77,20 +79,23 @@ int main(int argc, char **argv) {
         max: maximum value to accept as a valid int
 */
 int promptInt(string message, int min, int max) {
-    // The int entered by the user
+    // The string entered by the user
     string input;
+    // The integer parsed from the input string
     int input_val;
-    bool charFound;
-    bool intFound;
+    // Booleans to indicate if chars and/or ints are present in the user's input string
+    bool charFound = false;
+    bool intFound = false;
 
-    // Loop to gather user input until a valid integer is read
+    // Loop to gather user input until a valid input is received
     while(cout << message && getline(cin, input)) {
 
-        // Check for characters
+        // Check each index in the string for letters or symbols, which are an invalid input
         for(int i = 0; i < input.size(); i++) {
             if(!isdigit(input[i])) {
                 charFound = true;
             } else {
+                // Track if an int is found, which means stoi() can 
                 intFound = true;
             }
         }
@@ -129,12 +134,11 @@ double promptDouble(string message, double min, double max) {
     // The int entered by the user
     string input;
     double input_val;
-    bool charFound;
-    bool doubleFound;
+    bool charFound = false;
+    bool doubleFound = false;
 
     // Loop to gather user input until a valid integer is read
     while(cout << message && getline(cin, input)) {
-
         // Check for characters
         for(int i = 0; i < input.size(); i++) {
             if(!isdigit(input[i]) && input[i] != '.') {
