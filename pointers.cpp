@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <limits>
+#include <iomanip>
 using namespace std;
 
 typedef struct Student {
@@ -28,7 +29,6 @@ int main(int argc, char **argv) {
 
     string firstname;
     cout << "Please enter the student's first name: ";
-    cin.ignore();
     getline(cin,firstname);
     // Convert the string to a const char *, then to a char * and assign to student's f_name field
     char * temp1 = const_cast<char*>(firstname.c_str());
@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
 
     // Output `average`
     cout << "\nStudent: " << student.f_name << " " << student.l_name << " [" << student.id << "]" << endl;
-    cout << "  Average grade: " << *student.grades << "\n" << endl;
+    cout << "  Average grade: " << setprecision(1) << fixed << *student.grades << "\n" << endl;
 
     return 0;
 }
@@ -78,25 +78,44 @@ int main(int argc, char **argv) {
 */
 int promptInt(string message, int min, int max) {
     // The int entered by the user
-    int input;
+    string input;
+    int input_val;
+    bool charFound;
+    bool intFound;
 
     // Loop to gather user input until a valid integer is read
-    while(1) {
-        cout << message;
-        cin >> input;
+    while(cout << message && getline(cin, input)) {
+
+        // Check for characters
+        for(int i = 0; i < input.size(); i++) {
+            if(!isdigit(input[i])) {
+                charFound = true;
+            } else {
+                intFound = true;
+            }
+        }
+
+        if(intFound) {
+            try {
+                input_val = stoi(input);
+            } catch (const invalid_argument & e) {
+                intFound = false;
+            }
+        }
 
         // Error-checking triggers if there is a type mismatch, or the input is out of bounds
-        if(cin.fail() || input < min || input > max) {
-            // Clear the error flag on cin, then skip all the characters until the newline '\n' before reprompting
+        if(cin.fail() || input_val < min || input_val > max || charFound || !intFound) {
+            // Clear the error flag on cin
             cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Sorry, I cannot understand your answer \n" << endl;
+            cout << "Sorry, I cannot understand your answer" << endl;
+            charFound = false;
+            intFound = false;
         } else {
             break;
         }
     }
 
-    return input;
+    return input_val;
 }
 
 /* 
@@ -106,28 +125,50 @@ int promptInt(string message, int min, int max) {
         max: maximum value to accept as a valid double
 */
 double promptDouble(string message, double min, double max) {
-    // The double entered by the user
-    double input;
 
-    // Loop to gather user input until a valid double is read
-    while(1) {
-        cout << message;
-        cin >> input;
+    // The int entered by the user
+    string input;
+    double input_val;
+    bool charFound;
+    bool doubleFound;
+
+    // Loop to gather user input until a valid integer is read
+    while(cout << message && getline(cin, input)) {
+
+        // Check for characters
+        for(int i = 0; i < input.size(); i++) {
+            if(!isdigit(input[i]) && input[i] != '.') {
+                charFound = true;
+            } else if (input[i] == '.') {
+                if(!isdigit(input[i + 1])){
+                    charFound = true;
+                }
+            } else{
+                doubleFound = true;
+            }
+        }
+
+        if(doubleFound) {
+            try {
+                input_val = stod(input);
+            } catch (const invalid_argument & e) {
+                doubleFound = false;
+            }
+        }
 
         // Error-checking triggers if there is a type mismatch, or the input is out of bounds
-        if(cin.fail() || input < min || input > max) {
-            // Clear the error flag on cin, then skip all the characters until the newline '\n' before reprompting
+        if(cin.fail() || input_val < min || input_val > max || charFound || !doubleFound) {
+            // Clear the error flag on cin
             cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "Sorry, I cannot understand your answer" << endl;
+            charFound = false;
+            doubleFound = false;
         } else {
             break;
         }
-
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
-    return input;
+
+    return input_val;
 }
 
 /*
@@ -152,9 +193,7 @@ void calculateStudentAverage(void *object, double *avg) {
 
     // Calculate the average by dividing sum by size
     double result = sum/size;
-    cout << result;
 
     // Dereference avg
     *avg = result;
-    cout << "got here";
 }
