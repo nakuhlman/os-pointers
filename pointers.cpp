@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
     student.grades = new double[1];
     calculateStudentAverage(grades, student.grades);
 
-    // Output `average' and information about the student
+    // Output `average' to 1 decimal place, as well as information about the student
     cout << "\nStudent: " << student.f_name << " " << student.l_name << " [" << student.id << "]" << endl;
     cout << "  Average grade: " << setprecision(1) << fixed << *student.grades << "\n" << endl;
 
@@ -83,9 +83,8 @@ int promptInt(string message, int min, int max) {
     string input;
     // The integer parsed from the input string
     int input_val;
-    // Booleans to indicate if chars and/or ints are present in the user's input string
-    bool charFound = false;
-    bool intFound = false;
+    // Boolean to indicate if invalid characters are present in the user's input string
+    bool bad_char = false;
 
     // Loop to gather user input until a valid input is received
     while(cout << message && getline(cin, input)) {
@@ -93,28 +92,25 @@ int promptInt(string message, int min, int max) {
         // Check each index in the string for letters or symbols, which are an invalid input
         for(int i = 0; i < input.size(); i++) {
             if(!isdigit(input[i])) {
-                charFound = true;
-            } else {
-                // Track if an int is found, which means stoi() can 
-                intFound = true;
+                bad_char = true;
             }
         }
 
-        if(intFound) {
-            try {
-                input_val = stoi(input);
-            } catch (const invalid_argument & e) {
-                intFound = false;
-            }
+        // Parse the string to an integer, catching failures if the process fails due to invalid chars
+        try {
+            input_val = stoi(input);
+        } catch (const invalid_argument & e) {
+            bad_char = true;
         }
 
-        // Error-checking triggers if there is a type mismatch, or the input is out of bounds
-        if(cin.fail() || input_val < min || input_val > max || charFound || !intFound) {
+        // Error-checking triggers if there is a type mismatch, the input is out of bounds, or bad_char is true
+        if(cin.fail() || input_val < min || input_val > max || bad_char) {
             // Clear the error flag on cin
             cin.clear();
             cout << "Sorry, I cannot understand your answer" << endl;
-            charFound = false;
-            intFound = false;
+            // Reset bad_char for the new input
+            bad_char = false;
+        // If there were no errors, exit the loop
         } else {
             break;
         }
@@ -134,39 +130,37 @@ double promptDouble(string message, double min, double max) {
     // The int entered by the user
     string input;
     double input_val;
-    bool charFound = false;
-    bool doubleFound = false;
+    bool bad_char = false;
 
-    // Loop to gather user input until a valid integer is read
+    // Loop to gather user input until valid is received
     while(cout << message && getline(cin, input)) {
-        // Check for characters
+        // Check for invalid characters
         for(int i = 0; i < input.size(); i++) {
             if(!isdigit(input[i]) && input[i] != '.') {
-                charFound = true;
+                bad_char = true;
+            // With doubles, a '.' should always be followed by a digit; if not, set the bad_char flag
             } else if (input[i] == '.') {
                 if(!isdigit(input[i + 1])){
-                    charFound = true;
+                    bad_char = true;
                 }
-            } else{
-                doubleFound = true;
             }
         }
 
-        if(doubleFound) {
-            try {
-                input_val = stod(input);
-            } catch (const invalid_argument & e) {
-                doubleFound = false;
-            }
+        // Use stod to parse a double from the string, catching exceptions
+        try {
+            input_val = stod(input);
+        } catch (const invalid_argument & e) {
+            bad_char = true;
         }
 
-        // Error-checking triggers if there is a type mismatch, or the input is out of bounds
-        if(cin.fail() || input_val < min || input_val > max || charFound || !doubleFound) {
+        // Error-checking triggers if there is a type mismatch, the input is out of bounds, or bad_char is set
+        if(cin.fail() || input_val < min || input_val > max || bad_char) {
             // Clear the error flag on cin
             cin.clear();
             cout << "Sorry, I cannot understand your answer" << endl;
-            charFound = false;
-            doubleFound = false;
+            // Reset bad_char
+            bad_char = false;
+        // If there were no errors, exit the loop
         } else {
             break;
         }
@@ -175,9 +169,10 @@ double promptDouble(string message, double min, double max) {
     return input_val;
 }
 
-/*
-   object: pointer to anything - your choice! (but choose something that will be helpful)
-   avg: pointer to a double (can store a value here)
+/*  
+    Calculates the average of an array of doubles, representing grades by default, and calculates the average
+        object: pointer to anything - your choice! (but choose something that will be helpful)
+        avg: pointer to a double (can store a value here)
 */
 void calculateStudentAverage(void *object, double *avg) {
     // Cast the void pointer to grades
